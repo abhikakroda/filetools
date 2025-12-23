@@ -28,23 +28,23 @@ export const ToolCard = ({
           whileHover={{ y: -6, scale: 1.01 }}
           whileTap={{ scale: 0.98 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          className="relative overflow-hidden rounded-2xl p-6 bg-card border border-border/60 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
+          className="relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 bg-card border border-border/60 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 h-full"
         >
           {/* Gradient overlay on hover */}
           <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-[hsl(var(--gradient-end))]/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           
           {/* Icon container */}
-          <div className="relative mb-4 w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent flex items-center justify-center group-hover:scale-110 group-hover:rotate-[-4deg] transition-all duration-300">
-            <Icon className="h-5 w-5 text-primary" />
+          <div className="relative mb-3 sm:mb-4 w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent flex items-center justify-center group-hover:scale-110 group-hover:rotate-[-4deg] transition-all duration-300">
+            <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
           </div>
           
           {/* Content */}
           <div className="relative">
-            <div className="flex items-center justify-between mb-1.5">
-              <h3 className="font-bold text-foreground tracking-tight">{title}</h3>
-              <ArrowUpRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" />
+            <div className="flex items-start justify-between mb-1 sm:mb-1.5 gap-1">
+              <h3 className="font-bold text-sm sm:text-base text-foreground tracking-tight leading-tight">{title}</h3>
+              <ArrowUpRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 flex-shrink-0 mt-0.5" />
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-2">
               {description}
             </p>
           </div>

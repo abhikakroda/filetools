@@ -277,55 +277,57 @@ const PdfCompress = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="settings-panel space-y-6"
+              className="settings-panel space-y-4 sm:space-y-6"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-xl bg-accent flex items-center justify-center">
-                    <FileText className="h-6 w-6 text-primary" />
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                  <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg sm:rounded-xl bg-accent flex items-center justify-center flex-shrink-0">
+                    <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                   </div>
-                  <div>
-                    <p className="font-medium truncate max-w-[200px] sm:max-w-none">
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm sm:text-base truncate max-w-[150px] sm:max-w-none">
                       {pdfFile.name}
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       {formatFileSize(pdfFile.size)}
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={clearAll}
-                  className="p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-destructive transition-colors"
+                  className="p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-destructive transition-colors flex-shrink-0"
                 >
-                  <Trash2 className="h-5 w-5" />
+                  <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
                 </button>
               </div>
 
               {/* Compression Mode Toggle */}
               <div>
-                <label className="block text-sm font-medium mb-3">Compression Mode</label>
+                <label className="block text-xs sm:text-sm font-medium mb-2 sm:mb-3">Compression Mode</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setCompressionMode("target")}
-                    className={`py-3 px-4 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
+                    className={`py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg sm:rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 text-sm ${
                       compressionMode === "target"
                         ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
                         : "bg-muted hover:bg-muted/80"
                     }`}
                   >
-                    <Target className="h-4 w-4" />
-                    Target Size
+                    <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <span className="hidden xs:inline">Target Size</span>
+                    <span className="xs:hidden">Target</span>
                   </button>
                   <button
                     onClick={() => setCompressionMode("level")}
-                    className={`py-3 px-4 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
+                    className={`py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg sm:rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 text-sm ${
                       compressionMode === "level"
                         ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
                         : "bg-muted hover:bg-muted/80"
                     }`}
                   >
-                    <Settings2 className="h-4 w-4" />
-                    Compression Level
+                    <Settings2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <span className="hidden xs:inline">Compression Level</span>
+                    <span className="xs:hidden">Level</span>
                   </button>
                 </div>
               </div>
@@ -338,15 +340,15 @@ const PdfCompress = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                   >
-                    <label className="block text-sm font-medium mb-3">
+                    <label className="block text-xs sm:text-sm font-medium mb-2 sm:mb-3">
                       Target File Size
                     </label>
-                    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                    <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
                       {targetSizeOptions.map((option) => (
                         <button
                           key={option.value}
                           onClick={() => setTargetSize(option.value)}
-                          className={`py-2.5 px-3 rounded-xl font-medium text-sm transition-all duration-300 ${
+                          className={`py-2 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl font-medium text-xs sm:text-sm transition-all duration-300 ${
                             targetSize === option.value
                               ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
                               : "bg-muted hover:bg-muted/80"
@@ -356,8 +358,8 @@ const PdfCompress = () => {
                         </button>
                       ))}
                     </div>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      PDF will be compressed to approximately {targetSize < 1 ? `${targetSize * 1000} KB` : `${targetSize} MB`} or smaller
+                    <p className="text-[10px] sm:text-xs text-muted-foreground mt-2">
+                      PDF will be compressed to ~{targetSize < 1 ? `${targetSize * 1000} KB` : `${targetSize} MB`}
                     </p>
                   </motion.div>
                 ) : (
@@ -367,27 +369,27 @@ const PdfCompress = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                   >
-                    <label className="block text-sm font-medium mb-3">
+                    <label className="block text-xs sm:text-sm font-medium mb-2 sm:mb-3">
                       Compression Level
                     </label>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
                       {[
-                        { value: "low", label: "Maximum", desc: "Smallest size" },
+                        { value: "low", label: "Max", desc: "Smallest" },
                         { value: "medium", label: "Balanced", desc: "Recommended" },
-                        { value: "high", label: "Minimum", desc: "Best quality" },
+                        { value: "high", label: "Min", desc: "Best quality" },
                       ].map((q) => (
                         <button
                           key={q.value}
                           onClick={() => setQuality(q.value as typeof quality)}
-                          className={`py-3 px-4 rounded-xl font-medium transition-all duration-300 text-left ${
+                          className={`py-2 sm:py-3 px-2 sm:px-4 rounded-lg sm:rounded-xl font-medium transition-all duration-300 text-left ${
                             quality === q.value
                               ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
                               : "bg-muted hover:bg-muted/80"
                           }`}
                         >
-                          <span className="block text-sm">{q.label}</span>
+                          <span className="block text-xs sm:text-sm">{q.label}</span>
                           <span
-                            className={`block text-xs mt-0.5 ${
+                            className={`block text-[10px] sm:text-xs mt-0.5 ${
                               quality === q.value
                                 ? "text-primary-foreground/70"
                                 : "text-muted-foreground"
@@ -451,45 +453,46 @@ const PdfCompress = () => {
               exit={{ opacity: 0, y: -20 }}
               className="settings-panel"
             >
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-12 w-12 rounded-xl bg-success/20 flex items-center justify-center">
-                  <Check className="h-6 w-6 text-success" />
+              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg sm:rounded-xl bg-success/20 flex items-center justify-center flex-shrink-0">
+                  <Check className="h-5 w-5 sm:h-6 sm:w-6 text-success" />
                 </div>
                 <div>
-                  <p className="font-semibold text-lg">Compression Complete!</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="font-semibold text-base sm:text-lg">Compression Complete!</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">
                     Your PDF is ready to download
                   </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="text-center p-4 rounded-xl bg-muted">
-                  <p className="text-sm text-muted-foreground mb-1">Original</p>
-                  <p className="font-semibold">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-4 sm:mb-6">
+                <div className="text-center p-2 sm:p-4 rounded-lg sm:rounded-xl bg-muted">
+                  <p className="text-[10px] sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Original</p>
+                  <p className="font-semibold text-xs sm:text-base">
                     {formatFileSize(compressedPdf.originalSize)}
                   </p>
                 </div>
-                <div className="text-center p-4 rounded-xl bg-muted">
-                  <p className="text-sm text-muted-foreground mb-1">Compressed</p>
-                  <p className="font-semibold">
+                <div className="text-center p-2 sm:p-4 rounded-lg sm:rounded-xl bg-muted">
+                  <p className="text-[10px] sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Compressed</p>
+                  <p className="font-semibold text-xs sm:text-base">
                     {formatFileSize(compressedPdf.compressedSize)}
                   </p>
                 </div>
-                <div className="text-center p-4 rounded-xl bg-success/10">
-                  <p className="text-sm text-muted-foreground mb-1">Saved</p>
-                  <p className="font-semibold text-success">{savingsPercent}%</p>
+                <div className="text-center p-2 sm:p-4 rounded-lg sm:rounded-xl bg-success/10">
+                  <p className="text-[10px] sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Saved</p>
+                  <p className="font-semibold text-xs sm:text-base text-success">{savingsPercent}%</p>
                 </div>
               </div>
 
-              <div className="flex gap-3">
-                <button onClick={clearAll} className="btn-secondary flex-1">
+              <div className="flex gap-2 sm:gap-3">
+                <button onClick={clearAll} className="btn-secondary flex-1 text-sm">
                   <Trash2 className="h-4 w-4" />
-                  New PDF
+                  <span className="hidden xs:inline">New PDF</span>
+                  <span className="xs:hidden">New</span>
                 </button>
-                <button onClick={downloadPdf} className="btn-primary flex-1">
+                <button onClick={downloadPdf} className="btn-primary flex-1 text-sm">
                   <Download className="h-4 w-4" />
-                  Download PDF
+                  Download
                 </button>
               </div>
             </motion.div>
