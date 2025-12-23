@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Upload, Image, FileText, X } from "lucide-react";
 
@@ -20,6 +20,7 @@ export const FileDropzone = ({
   maxFiles = 50,
 }: FileDropzoneProps) => {
   const [isDragging, setIsDragging] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -59,10 +60,21 @@ export const FileDropzone = ({
         : [];
       if (files.length > 0) {
         onFilesSelected(files);
+        // Reset input so same file can be selected again
+        e.target.value = "";
       }
     },
     [onFilesSelected, maxFiles]
   );
+
+  const handleClick = useCallback(() => {
+    inputRef.current?.click();
+  }, []);
+
+  const handleButtonClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    inputRef.current?.click();
+  }, []);
 
   const isImageAccept = accept.includes("image");
   const Icon = isImageAccept ? Image : FileText;
@@ -76,13 +88,15 @@ export const FileDropzone = ({
       onDragLeave={handleDragOut}
       onDragOver={handleDrag}
       onDrop={handleDrop}
+      onClick={handleClick}
     >
       <input
+        ref={inputRef}
         type="file"
         accept={accept}
         multiple={multiple}
         onChange={handleChange}
-        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        className="hidden"
       />
 
       <AnimatePresence mode="wait">
@@ -92,7 +106,7 @@ export const FileDropzone = ({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="flex flex-col items-center gap-3"
+            className="flex flex-col items-center gap-3 pointer-events-none"
           >
             <div className="h-16 w-16 rounded-2xl bg-primary/20 flex items-center justify-center">
               <Upload className="h-8 w-8 text-primary animate-bounce-soft" />
@@ -105,7 +119,7 @@ export const FileDropzone = ({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="flex flex-col items-center gap-3"
+            className="flex flex-col items-center gap-3 pointer-events-none"
           >
             <div className="h-16 w-16 rounded-2xl bg-muted flex items-center justify-center">
               <Icon className="h-8 w-8 text-muted-foreground" />
@@ -114,7 +128,11 @@ export const FileDropzone = ({
               <p className="font-semibold text-foreground">{label}</p>
               <p className="text-sm text-muted-foreground mt-1">{description}</p>
             </div>
-            <button className="btn-secondary mt-2">
+            <button 
+              type="button"
+              className="btn-secondary mt-2 pointer-events-auto"
+              onClick={handleButtonClick}
+            >
               <Upload className="h-4 w-4" />
               Browse Files
             </button>
