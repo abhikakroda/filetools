@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Minimize2, Download, Settings2, Trash2, RefreshCw } from "lucide-react";
+import { Minimize2, Download, Settings2, Trash2, RefreshCw, Target } from "lucide-react";
 import imageCompression from "browser-image-compression";
 import { ToolLayout } from "@/components/ToolLayout";
 import { FileDropzone, FilePreview } from "@/components/FileDropzone";
@@ -16,10 +16,21 @@ interface ProcessedFile {
   progress: number;
 }
 
+const targetSizeOptions = [
+  { value: 0.1, label: "100 KB" },
+  { value: 0.25, label: "250 KB" },
+  { value: 0.5, label: "500 KB" },
+  { value: 1, label: "1 MB" },
+  { value: 2, label: "2 MB" },
+  { value: 5, label: "5 MB" },
+];
+
 const ImageCompress = () => {
   const [files, setFiles] = useState<ProcessedFile[]>([]);
+  const [compressionMode, setCompressionMode] = useState<"quality" | "target">("target");
   const [quality, setQuality] = useState([80]);
   const [maxWidth, setMaxWidth] = useState([1920]);
+  const [targetSize, setTargetSize] = useState(1); // MB
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleFilesSelected = useCallback((selectedFiles: File[]) => {
@@ -67,10 +78,11 @@ const ImageCompress = () => {
 
       try {
         const options = {
-          maxSizeMB: 10,
+          maxSizeMB: compressionMode === "target" ? targetSize : 10,
           maxWidthOrHeight: maxWidth[0],
           useWebWorker: true,
-          initialQuality: quality[0] / 100,
+          initialQuality: compressionMode === "quality" ? quality[0] / 100 : undefined,
+          alwaysKeepResolution: compressionMode === "target",
           onProgress: (progress: number) => {
             setFiles((prev) =>
               prev.map((f, idx) =>
@@ -163,54 +175,122 @@ const ImageCompress = () => {
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
-            className="bg-card border border-border rounded-xl p-6"
+            className="settings-panel space-y-6"
           >
-            <div className="flex items-center gap-2 mb-6">
+            <div className="flex items-center gap-2 mb-2">
               <Settings2 className="h-5 w-5 text-primary" />
               <h3 className="font-semibold">Compression Settings</h3>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <label className="text-sm font-medium">Quality</label>
-                  <span className="text-sm text-muted-foreground">
-                    {quality[0]}%
-                  </span>
-                </div>
-                <Slider
-                  value={quality}
-                  onValueChange={setQuality}
-                  min={10}
-                  max={100}
-                  step={5}
-                  className="w-full"
-                />
-                <p className="text-xs text-muted-foreground mt-2">
-                  Higher quality = larger file size
-                </p>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <label className="text-sm font-medium">Max Width</label>
-                  <span className="text-sm text-muted-foreground">
-                    {maxWidth[0]}px
-                  </span>
-                </div>
-                <Slider
-                  value={maxWidth}
-                  onValueChange={setMaxWidth}
-                  min={320}
-                  max={4096}
-                  step={64}
-                  className="w-full"
-                />
-                <p className="text-xs text-muted-foreground mt-2">
-                  Images wider than this will be resized
-                </p>
+            {/* Compression Mode Toggle */}
+            <div>
+              <label className="block text-sm font-medium mb-3">Compression Mode</label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setCompressionMode("target")}
+                  className={`py-3 px-4 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
+                    compressionMode === "target"
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                      : "bg-muted hover:bg-muted/80"
+                  }`}
+                >
+                  <Target className="h-4 w-4" />
+                  Target Size
+                </button>
+                <button
+                  onClick={() => setCompressionMode("quality")}
+                  className={`py-3 px-4 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
+                    compressionMode === "quality"
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                      : "bg-muted hover:bg-muted/80"
+                  }`}
+                >
+                  <Settings2 className="h-4 w-4" />
+                  Quality Based
+                </button>
               </div>
             </div>
+
+            <AnimatePresence mode="wait">
+              {compressionMode === "target" ? (
+                <motion.div
+                  key="target"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                >
+                  <label className="block text-sm font-medium mb-3">
+                    Target File Size
+                  </label>
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                    {targetSizeOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => setTargetSize(option.value)}
+                        className={`py-2.5 px-3 rounded-xl font-medium text-sm transition-all duration-300 ${
+                          targetSize === option.value
+                            ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                            : "bg-muted hover:bg-muted/80"
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Images will be compressed to approximately {targetSize < 1 ? `${targetSize * 1000} KB` : `${targetSize} MB`} or smaller
+                  </p>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="quality"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="grid gap-6 md:grid-cols-2"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="text-sm font-medium">Quality</label>
+                      <span className="text-sm text-muted-foreground">
+                        {quality[0]}%
+                      </span>
+                    </div>
+                    <Slider
+                      value={quality}
+                      onValueChange={setQuality}
+                      min={10}
+                      max={100}
+                      step={5}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Higher quality = larger file size
+                    </p>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="text-sm font-medium">Max Width</label>
+                      <span className="text-sm text-muted-foreground">
+                        {maxWidth[0]}px
+                      </span>
+                    </div>
+                    <Slider
+                      value={maxWidth}
+                      onValueChange={setMaxWidth}
+                      min={320}
+                      max={4096}
+                      step={64}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Images wider than this will be resized
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
 
@@ -287,7 +367,7 @@ const ImageCompress = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-card border border-border rounded-xl p-4"
+            className="flex flex-col sm:flex-row gap-4 items-center justify-between settings-panel"
           >
             <div className="text-center sm:text-left">
               {totalCompressed > 0 && (
@@ -321,7 +401,10 @@ const ImageCompress = () => {
                 ) : (
                   <>
                     <Minimize2 className="h-4 w-4" />
-                    Compress Images
+                    {compressionMode === "target" 
+                      ? `Compress to ${targetSize < 1 ? `${targetSize * 1000} KB` : `${targetSize} MB`}`
+                      : "Compress Images"
+                    }
                   </>
                 )}
               </button>
