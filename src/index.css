@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,47 +6,51 @@
 
 @layer base {
   :root {
-    --background: 220 20% 97%;
-    --foreground: 222 47% 11%;
+    --background: 240 20% 99%;
+    --foreground: 240 10% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 240 10% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 240 10% 10%;
 
-    --primary: 211 100% 50%;
+    --primary: 252 85% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 240 10% 96%;
+    --secondary-foreground: 240 10% 10%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
+    --muted: 240 10% 96%;
+    --muted-foreground: 240 5% 50%;
 
-    --accent: 211 100% 96%;
-    --accent-foreground: 211 100% 35%;
+    --accent: 252 85% 96%;
+    --accent-foreground: 252 85% 45%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 211 100% 50%;
+    --border: 240 10% 92%;
+    --input: 240 10% 92%;
+    --ring: 252 85% 60%;
 
-    --radius: 1rem;
+    --radius: 0.875rem;
 
-    --success: 142 71% 45%;
+    --success: 160 84% 39%;
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    /* Apple Liquid Glass Variables */
+    /* Glass Variables */
     --glass-bg: 0 0% 100%;
-    --glass-blur: 20px;
-    --glass-border: 0 0% 100%;
-    --glass-shadow: 220 60% 50%;
+    --glass-blur: 24px;
+    --glass-border: 240 10% 95%;
+    --glass-shadow: 252 40% 50%;
+
+    /* Gradient accent colors */
+    --gradient-start: 252 85% 60%;
+    --gradient-end: 200 85% 55%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -54,59 +58,63 @@
     --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-border: 240 10% 92%;
+    --sidebar-ring: 252 85% 60%;
   }
 
   .dark {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 98%;
+    --background: 240 15% 6%;
+    --foreground: 0 0% 98%;
 
-    --card: 222 47% 10%;
-    --card-foreground: 210 40% 98%;
+    --card: 240 15% 9%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 222 47% 10%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 240 15% 9%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 211 100% 55%;
+    --primary: 252 85% 65%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 240 15% 15%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 240 15% 15%;
+    --muted-foreground: 240 5% 60%;
 
-    --accent: 211 100% 15%;
-    --accent-foreground: 211 100% 85%;
+    --accent: 252 40% 18%;
+    --accent-foreground: 252 85% 80%;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 63% 40%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 217 33% 20%;
-    --input: 217 33% 17%;
-    --ring: 211 100% 55%;
+    --border: 240 15% 18%;
+    --input: 240 15% 15%;
+    --ring: 252 85% 65%;
 
-    --success: 142 71% 35%;
+    --success: 160 84% 35%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 38 92% 40%;
+    --warning: 38 92% 45%;
     --warning-foreground: 0 0% 100%;
 
-    /* Apple Liquid Glass Variables - Dark */
-    --glass-bg: 222 47% 12%;
-    --glass-blur: 24px;
-    --glass-border: 217 33% 25%;
-    --glass-shadow: 222 47% 5%;
+    /* Glass Variables - Dark */
+    --glass-bg: 240 15% 10%;
+    --glass-blur: 28px;
+    --glass-border: 240 15% 20%;
+    --glass-shadow: 240 15% 4%;
 
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    /* Gradient accent colors */
+    --gradient-start: 252 85% 65%;
+    --gradient-end: 200 85% 60%;
+
+    --sidebar-background: 240 15% 8%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 252 85% 65%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 240 15% 14%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 240 15% 16%;
+    --sidebar-ring: 252 85% 65%;
   }
 }
 
@@ -117,7 +125,13 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.2);
+    color: hsl(var(--foreground));
   }
 }
 

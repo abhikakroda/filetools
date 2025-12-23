@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LucideIcon } from "lucide-react";
+import { LucideIcon, ArrowUpRight } from "lucide-react";
 
 interface ToolCardProps {
   title: string;
@@ -21,22 +21,36 @@ export const ToolCard = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: delay * 0.1 }}
+      transition={{ duration: 0.5, delay: delay * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
-      <Link to={href} className="block">
+      <Link to={href} className="block group">
         <motion.div
-          whileHover={{ y: -4 }}
+          whileHover={{ y: -6, scale: 1.01 }}
           whileTap={{ scale: 0.98 }}
-          className="tool-card group"
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          className="relative overflow-hidden rounded-2xl p-6 bg-card border border-border/60 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
         >
-          <div className="tool-card-icon group-hover:scale-110 transition-transform duration-300">
-            <Icon className="h-6 w-6" />
+          {/* Gradient overlay on hover */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-[hsl(var(--gradient-end))]/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          
+          {/* Icon container */}
+          <div className="relative mb-4 w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent flex items-center justify-center group-hover:scale-110 group-hover:rotate-[-4deg] transition-all duration-300">
+            <Icon className="h-5 w-5 text-primary" />
           </div>
-          <h3 className="font-semibold text-foreground mb-1">{title}</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {description}
-          </p>
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-primary/50 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-xl" />
+          
+          {/* Content */}
+          <div className="relative">
+            <div className="flex items-center justify-between mb-1.5">
+              <h3 className="font-bold text-foreground tracking-tight">{title}</h3>
+              <ArrowUpRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" />
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {description}
+            </p>
+          </div>
+          
+          {/* Bottom accent line */}
+          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary via-[hsl(var(--gradient-end))] to-primary/50 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
         </motion.div>
       </Link>
     </motion.div>
