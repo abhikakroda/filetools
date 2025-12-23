@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
+    --background: 220 20% 97%;
     --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
@@ -15,32 +15,38 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 173 58% 39%;
+    --primary: 211 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 20% 96%;
+    --secondary: 220 14% 96%;
     --secondary-foreground: 222 47% 11%;
 
-    --muted: 210 20% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
 
-    --accent: 173 58% 95%;
-    --accent-foreground: 173 58% 25%;
+    --accent: 211 100% 96%;
+    --accent-foreground: 211 100% 35%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 173 58% 39%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 211 100% 50%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
     --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
+
+    /* Apple Liquid Glass Variables */
+    --glass-bg: 0 0% 100%;
+    --glass-blur: 20px;
+    --glass-border: 0 0% 100%;
+    --glass-shadow: 220 60% 50%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -56,13 +62,13 @@
     --background: 222 47% 6%;
     --foreground: 210 40% 98%;
 
-    --card: 222 47% 8%;
+    --card: 222 47% 10%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222 47% 8%;
+    --popover: 222 47% 10%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 173 58% 45%;
+    --primary: 211 100% 55%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 217 33% 17%;
@@ -71,21 +77,27 @@
     --muted: 217 33% 17%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 173 58% 15%;
-    --accent-foreground: 173 58% 85%;
+    --accent: 211 100% 15%;
+    --accent-foreground: 211 100% 85%;
 
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217 33% 17%;
+    --border: 217 33% 20%;
     --input: 217 33% 17%;
-    --ring: 173 58% 45%;
+    --ring: 211 100% 55%;
 
     --success: 142 71% 35%;
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 40%;
     --warning-foreground: 0 0% 100%;
+
+    /* Apple Liquid Glass Variables - Dark */
+    --glass-bg: 222 47% 12%;
+    --glass-blur: 24px;
+    --glass-border: 217 33% 25%;
+    --glass-shadow: 222 47% 5%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -104,26 +116,101 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
   }
 }
 
 @layer utilities {
   .text-gradient {
-    @apply bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent;
   }
 
+  /* Apple Liquid Glass Effect */
   .glass {
-    @apply bg-card/80 backdrop-blur-lg;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--glass-bg) / 0.7) 0%,
+      hsl(var(--glass-bg) / 0.5) 50%,
+      hsl(var(--glass-bg) / 0.6) 100%
+    );
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    border: 1px solid hsl(var(--glass-border) / 0.3);
+    box-shadow: 
+      0 8px 32px hsl(var(--glass-shadow) / 0.08),
+      inset 0 1px 0 hsl(0 0% 100% / 0.1),
+      inset 0 -1px 0 hsl(0 0% 0% / 0.05);
   }
 
-  .card-shadow {
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+  .glass-strong {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--glass-bg) / 0.85) 0%,
+      hsl(var(--glass-bg) / 0.75) 50%,
+      hsl(var(--glass-bg) / 0.8) 100%
+    );
+    backdrop-filter: blur(30px) saturate(200%);
+    -webkit-backdrop-filter: blur(30px) saturate(200%);
+    border: 1px solid hsl(var(--glass-border) / 0.4);
+    box-shadow: 
+      0 12px 40px hsl(var(--glass-shadow) / 0.12),
+      inset 0 2px 0 hsl(0 0% 100% / 0.15),
+      inset 0 -1px 0 hsl(0 0% 0% / 0.08);
   }
 
-  .card-shadow-hover {
-    box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.04);
+  .glass-card {
+    background: linear-gradient(
+      145deg,
+      hsl(var(--card) / 0.9) 0%,
+      hsl(var(--card) / 0.7) 100%
+    );
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    border: 1px solid hsl(var(--border) / 0.5);
+    box-shadow: 
+      0 4px 24px hsl(var(--glass-shadow) / 0.06),
+      0 1px 2px hsl(var(--glass-shadow) / 0.04),
+      inset 0 1px 0 hsl(0 0% 100% / 0.08);
+  }
+
+  .glass-hover {
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .glass-hover:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 
+      0 20px 50px hsl(var(--glass-shadow) / 0.15),
+      0 8px 20px hsl(var(--glass-shadow) / 0.08),
+      inset 0 1px 0 hsl(0 0% 100% / 0.2);
+    border-color: hsl(var(--primary) / 0.3);
+  }
+
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(0 0% 100% / 0.1) 50%,
+      transparent 100%
+    );
+    animation: shimmer 3s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
   }
 
   .dropzone-active {
@@ -133,34 +220,175 @@
 
 @layer components {
   .tool-card {
-    @apply relative overflow-hidden rounded-xl border border-border bg-card p-6 transition-all duration-300;
-    @apply hover:border-primary/30 hover:shadow-lg hover:-translate-y-1;
+    @apply relative overflow-hidden rounded-2xl p-6 transition-all duration-500;
+    background: linear-gradient(
+      145deg,
+      hsl(var(--card) / 0.95) 0%,
+      hsl(var(--card) / 0.85) 100%
+    );
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid hsl(var(--border) / 0.6);
+    box-shadow: 
+      0 4px 24px hsl(var(--glass-shadow) / 0.05),
+      0 1px 3px hsl(var(--glass-shadow) / 0.03),
+      inset 0 1px 0 hsl(0 0% 100% / 0.1);
+  }
+
+  .tool-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    border-color: hsl(var(--primary) / 0.4);
+    box-shadow: 
+      0 24px 48px hsl(var(--glass-shadow) / 0.12),
+      0 12px 24px hsl(var(--primary) / 0.08),
+      inset 0 1px 0 hsl(0 0% 100% / 0.15);
   }
 
   .tool-card-icon {
-    @apply flex h-12 w-12 items-center justify-center rounded-xl bg-accent text-primary mb-4;
+    @apply flex h-14 w-14 items-center justify-center rounded-2xl text-primary mb-4;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--accent)) 0%,
+      hsl(var(--primary) / 0.15) 100%
+    );
+    box-shadow: 
+      0 4px 12px hsl(var(--primary) / 0.15),
+      inset 0 1px 0 hsl(0 0% 100% / 0.2);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .tool-card:hover .tool-card-icon {
+    transform: scale(1.1) rotate(-3deg);
+    box-shadow: 
+      0 8px 20px hsl(var(--primary) / 0.25),
+      inset 0 1px 0 hsl(0 0% 100% / 0.3);
   }
 
   .dropzone {
-    @apply relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-secondary/30 p-8 md:p-12 transition-all duration-300;
-    @apply hover:border-primary/50 hover:bg-accent/30;
+    @apply relative flex flex-col items-center justify-center rounded-3xl border-2 border-dashed p-8 md:p-12 transition-all duration-500;
+    background: linear-gradient(
+      145deg,
+      hsl(var(--secondary) / 0.5) 0%,
+      hsl(var(--secondary) / 0.3) 100%
+    );
+    backdrop-filter: blur(12px);
+    border-color: hsl(var(--border));
+  }
+
+  .dropzone:hover {
+    border-color: hsl(var(--primary) / 0.5);
+    background: linear-gradient(
+      145deg,
+      hsl(var(--accent) / 0.5) 0%,
+      hsl(var(--accent) / 0.3) 100%
+    );
+    box-shadow: 
+      0 8px 32px hsl(var(--primary) / 0.08),
+      inset 0 1px 0 hsl(0 0% 100% / 0.1);
   }
 
   .dropzone.active {
-    @apply border-primary bg-accent/50;
+    @apply border-primary;
+    background: linear-gradient(
+      145deg,
+      hsl(var(--accent) / 0.7) 0%,
+      hsl(var(--accent) / 0.5) 100%
+    );
+    box-shadow: 
+      0 12px 40px hsl(var(--primary) / 0.15),
+      inset 0 1px 0 hsl(0 0% 100% / 0.15);
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground transition-all duration-200;
-    @apply hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 active:scale-[0.98];
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5 font-semibold text-primary-foreground transition-all duration-300;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary)) 0%,
+      hsl(var(--primary) / 0.85) 100%
+    );
+    box-shadow: 
+      0 4px 14px hsl(var(--primary) / 0.35),
+      0 2px 4px hsl(var(--primary) / 0.2),
+      inset 0 1px 0 hsl(0 0% 100% / 0.15);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+      0 8px 25px hsl(var(--primary) / 0.4),
+      0 4px 10px hsl(var(--primary) / 0.3),
+      inset 0 1px 0 hsl(0 0% 100% / 0.2);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0) scale(0.98);
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-6 py-3 font-medium text-foreground transition-all duration-200;
-    @apply hover:bg-secondary hover:border-primary/30 active:scale-[0.98];
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5 font-medium transition-all duration-300;
+    background: linear-gradient(
+      145deg,
+      hsl(var(--card) / 0.9) 0%,
+      hsl(var(--card) / 0.7) 100%
+    );
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border) / 0.8);
+    color: hsl(var(--foreground));
+    box-shadow: 
+      0 2px 8px hsl(var(--glass-shadow) / 0.05),
+      inset 0 1px 0 hsl(0 0% 100% / 0.1);
+  }
+
+  .btn-secondary:hover {
+    transform: translateY(-2px);
+    border-color: hsl(var(--primary) / 0.3);
+    box-shadow: 
+      0 8px 20px hsl(var(--glass-shadow) / 0.1),
+      inset 0 1px 0 hsl(0 0% 100% / 0.15);
   }
 
   .privacy-badge {
-    @apply inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-foreground;
+    @apply inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--accent) / 0.9) 0%,
+      hsl(var(--accent) / 0.7) 100%
+    );
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--primary) / 0.15);
+    color: hsl(var(--accent-foreground));
+    box-shadow: 
+      0 2px 8px hsl(var(--primary) / 0.1),
+      inset 0 1px 0 hsl(0 0% 100% / 0.1);
+  }
+
+  .settings-panel {
+    @apply rounded-2xl p-6;
+    background: linear-gradient(
+      145deg,
+      hsl(var(--card) / 0.9) 0%,
+      hsl(var(--card) / 0.75) 100%
+    );
+    backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--border) / 0.6);
+    box-shadow: 
+      0 4px 20px hsl(var(--glass-shadow) / 0.06),
+      inset 0 1px 0 hsl(0 0% 100% / 0.08);
+  }
+
+  .file-item {
+    @apply flex items-center gap-4 p-4 rounded-xl transition-all duration-300;
+    background: linear-gradient(
+      145deg,
+      hsl(var(--card)) 0%,
+      hsl(var(--card) / 0.9) 100%
+    );
+    border: 1px solid hsl(var(--border) / 0.5);
+    box-shadow: 0 2px 8px hsl(var(--glass-shadow) / 0.04);
+  }
+
+  .file-item:hover {
+    border-color: hsl(var(--primary) / 0.2);
+    box-shadow: 0 4px 16px hsl(var(--glass-shadow) / 0.08);
   }
 }
