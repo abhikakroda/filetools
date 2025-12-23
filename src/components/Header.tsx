@@ -1,11 +1,10 @@
-import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { Shield, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 
-export const Header = forwardRef<HTMLElement>((_, ref) => {
+export const Header = () => {
   return (
-    <header ref={ref} className="sticky top-0 z-50 w-full glass-strong border-b border-border/50">
+    <header className="sticky top-0 z-50 w-full glass-strong border-b border-border/50">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-3">
           <motion.div
@@ -31,6 +30,4 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
       </div>
     </header>
   );
-});
-
-Header.displayName = "Header";
+};
