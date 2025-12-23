@@ -2,9 +2,13 @@ import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FileDown, Download, Trash2, RefreshCw, FileText, Check, Target, Settings2 } from "lucide-react";
 import { PDFDocument } from "pdf-lib";
+import * as pdfjsLib from "pdfjs-dist";
 import { ToolLayout } from "@/components/ToolLayout";
 import { FileDropzone } from "@/components/FileDropzone";
 import { toast } from "sonner";
+
+// Set the worker source
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 interface CompressedPdf {
   blob: Blob;
@@ -14,12 +18,12 @@ interface CompressedPdf {
 }
 
 const targetSizeOptions = [
+  { value: 0.1, label: "100 KB" },
+  { value: 0.25, label: "250 KB" },
   { value: 0.5, label: "500 KB" },
   { value: 1, label: "1 MB" },
   { value: 2, label: "2 MB" },
   { value: 5, label: "5 MB" },
-  { value: 10, label: "10 MB" },
-  { value: 20, label: "20 MB" },
 ];
 
 const PdfCompress = () => {
@@ -29,6 +33,7 @@ const PdfCompress = () => {
   const [compressionMode, setCompressionMode] = useState<"target" | "level">("target");
   const [targetSize, setTargetSize] = useState(1); // MB
   const [quality, setQuality] = useState<"low" | "medium" | "high">("medium");
+  const [progress, setProgress] = useState(0);
 
   const handleFilesSelected = useCallback(async (selectedFiles: File[]) => {
     const pdfFiles = selectedFiles.filter((f) => f.type === "application/pdf");
@@ -39,6 +44,7 @@ const PdfCompress = () => {
 
     setPdfFile(pdfFiles[0]);
     setCompressedPdf(null);
+    setProgress(0);
     toast.success("PDF loaded successfully");
   }, []);
 
@@ -50,61 +56,162 @@ const PdfCompress = () => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
-  const compressPdfToSize = async (pdfDoc: PDFDocument, targetBytes: number, originalSize: number): Promise<Uint8Array> => {
-    // Start with aggressive compression
-    let objectsPerTick = 10;
-    let result = await pdfDoc.save({
-      useObjectStreams: true,
-      addDefaultPage: false,
-      objectsPerTick,
+  const renderPageToImage = async (
+    pdfDoc: pdfjsLib.PDFDocumentProxy,
+    pageNum: number,
+    scale: number,
+    jpegQuality: number
+  ): Promise<Blob> => {
+    const page = await pdfDoc.getPage(pageNum);
+    const viewport = page.getViewport({ scale });
+    
+    const canvas = document.createElement("canvas");
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    
+    const context = canvas.getContext("2d")!;
+    context.fillStyle = "white";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    
+    await page.render({ canvasContext: context, viewport }).promise;
+    
+    return new Promise((resolve) => {
+      canvas.toBlob(
+        (blob) => resolve(blob!),
+        "image/jpeg",
+        jpegQuality
+      );
     });
+  };
 
-    // If still too large, try to reduce more by recreating
-    if (result.length > targetBytes && result.length < originalSize) {
-      // Already compressed, return best result
-      return result;
+  const compressPdfWithImages = async (
+    arrayBuffer: ArrayBuffer,
+    targetBytes: number
+  ): Promise<Blob> => {
+    const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const numPages = pdfDoc.numPages;
+    
+    // Binary search for the right quality/scale combination
+    let minQuality = 0.1;
+    let maxQuality = 0.95;
+    let bestBlob: Blob | null = null;
+    let scale = 1.5;
+    
+    // Adjust initial scale based on target size
+    if (targetBytes < 500 * 1024) {
+      scale = 0.8;
+    } else if (targetBytes < 1024 * 1024) {
+      scale = 1.0;
     }
-
-    return result;
+    
+    // Try different quality levels to find the best fit
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const testQuality = (minQuality + maxQuality) / 2;
+      
+      const newPdf = await PDFDocument.create();
+      
+      for (let i = 1; i <= numPages; i++) {
+        setProgress(Math.round((i / numPages) * 80 + attempt * 4));
+        
+        const imageBlob = await renderPageToImage(pdfDoc, i, scale, testQuality);
+        const imageBytes = await imageBlob.arrayBuffer();
+        const image = await newPdf.embedJpg(new Uint8Array(imageBytes));
+        
+        const page = newPdf.addPage([image.width, image.height]);
+        page.drawImage(image, {
+          x: 0,
+          y: 0,
+          width: image.width,
+          height: image.height,
+        });
+      }
+      
+      const pdfBytes = await newPdf.save();
+      const blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
+      
+      if (blob.size <= targetBytes) {
+        bestBlob = blob;
+        minQuality = testQuality;
+      } else {
+        maxQuality = testQuality;
+        if (!bestBlob || blob.size < bestBlob.size) {
+          bestBlob = blob;
+        }
+      }
+      
+      // If we're close enough to target, stop
+      if (blob.size <= targetBytes && blob.size >= targetBytes * 0.7) {
+        break;
+      }
+      
+      // Reduce scale if still too large
+      if (blob.size > targetBytes * 2 && scale > 0.5) {
+        scale *= 0.8;
+      }
+    }
+    
+    setProgress(100);
+    return bestBlob!;
   };
 
   const compressPdf = async () => {
     if (!pdfFile) return;
 
     setIsProcessing(true);
+    setProgress(0);
 
     try {
       const arrayBuffer = await pdfFile.arrayBuffer();
-      const originalPdf = await PDFDocument.load(arrayBuffer);
       
-      // Create a new PDF and copy pages (removes redundancy)
-      const compressedDoc = await PDFDocument.create();
-      const pages = await compressedDoc.copyPages(originalPdf, originalPdf.getPageIndices());
-      pages.forEach(page => compressedDoc.addPage(page));
-
-      // Remove metadata to reduce size
-      compressedDoc.setTitle("");
-      compressedDoc.setAuthor("");
-      compressedDoc.setSubject("");
-      compressedDoc.setKeywords([]);
-      compressedDoc.setProducer("");
-      compressedDoc.setCreator("");
-
-      let compressedBytes: Uint8Array;
-
+      let blob: Blob;
+      
       if (compressionMode === "target") {
         const targetBytes = targetSize * 1024 * 1024;
-        compressedBytes = await compressPdfToSize(compressedDoc, targetBytes, pdfFile.size);
+        
+        // If file is already smaller than target, just optimize it
+        if (pdfFile.size <= targetBytes) {
+          const originalPdf = await PDFDocument.load(arrayBuffer);
+          const compressedDoc = await PDFDocument.create();
+          const pages = await compressedDoc.copyPages(originalPdf, originalPdf.getPageIndices());
+          pages.forEach(page => compressedDoc.addPage(page));
+          const pdfBytes = await compressedDoc.save({ useObjectStreams: true });
+          blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
+        } else {
+          blob = await compressPdfWithImages(arrayBuffer, targetBytes);
+        }
       } else {
-        const objectsPerTick = quality === "low" ? 10 : quality === "medium" ? 50 : 100;
-        compressedBytes = await compressedDoc.save({
-          useObjectStreams: true,
-          addDefaultPage: false,
-          objectsPerTick,
-        });
+        // Level-based compression using image conversion
+        const qualityMap = { low: 0.3, medium: 0.6, high: 0.85 };
+        const scaleMap = { low: 0.7, medium: 1.0, high: 1.2 };
+        
+        const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        const numPages = pdfDoc.numPages;
+        const newPdf = await PDFDocument.create();
+        
+        for (let i = 1; i <= numPages; i++) {
+          setProgress(Math.round((i / numPages) * 100));
+          
+          const imageBlob = await renderPageToImage(
+            pdfDoc, 
+            i, 
+            scaleMap[quality], 
+            qualityMap[quality]
+          );
+          const imageBytes = await imageBlob.arrayBuffer();
+          const image = await newPdf.embedJpg(new Uint8Array(imageBytes));
+          
+          const page = newPdf.addPage([image.width, image.height]);
+          page.drawImage(image, {
+            x: 0,
+            y: 0,
+            width: image.width,
+            height: image.height,
+          });
+        }
+        
+        const pdfBytes = await newPdf.save();
+        blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
       }
-
-      const blob = new Blob([new Uint8Array(compressedBytes)], { type: "application/pdf" });
 
       setCompressedPdf({
         blob,
@@ -124,6 +231,7 @@ const PdfCompress = () => {
       console.error(error);
     } finally {
       setIsProcessing(false);
+      setProgress(0);
     }
   };
 
@@ -294,6 +402,23 @@ const PdfCompress = () => {
                 )}
               </AnimatePresence>
 
+              {isProcessing && progress > 0 && (
+                <div className="mb-4">
+                  <div className="flex justify-between text-sm text-muted-foreground mb-2">
+                    <span>Compressing...</span>
+                    <span>{progress}%</span>
+                  </div>
+                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-primary"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progress}%` }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  </div>
+                </div>
+              )}
+
               <button
                 onClick={compressPdf}
                 disabled={isProcessing}
@@ -302,7 +427,7 @@ const PdfCompress = () => {
                 {isProcessing ? (
                   <>
                     <RefreshCw className="h-4 w-4 animate-spin" />
-                    Compressing...
+                    Compressing... {progress}%
                   </>
                 ) : (
                   <>
