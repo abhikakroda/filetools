@@ -106,12 +106,12 @@ export const FileDropzone = ({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="flex flex-col items-center gap-3 pointer-events-none"
+            className="flex flex-col items-center gap-2 sm:gap-3 pointer-events-none"
           >
-            <div className="h-16 w-16 rounded-2xl bg-primary/20 flex items-center justify-center">
-              <Upload className="h-8 w-8 text-primary animate-bounce-soft" />
+            <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-xl sm:rounded-2xl bg-primary/20 flex items-center justify-center">
+              <Upload className="h-6 w-6 sm:h-8 sm:w-8 text-primary animate-bounce-soft" />
             </div>
-            <p className="font-semibold text-primary">Release to upload</p>
+            <p className="font-semibold text-primary text-sm sm:text-base">Release to upload</p>
           </motion.div>
         ) : (
           <motion.div
@@ -119,18 +119,18 @@ export const FileDropzone = ({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="flex flex-col items-center gap-3 pointer-events-none"
+            className="flex flex-col items-center gap-2 sm:gap-3 pointer-events-none"
           >
-            <div className="h-16 w-16 rounded-2xl bg-muted flex items-center justify-center">
-              <Icon className="h-8 w-8 text-muted-foreground" />
+            <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-xl sm:rounded-2xl bg-muted flex items-center justify-center">
+              <Icon className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
             </div>
-            <div className="text-center">
-              <p className="font-semibold text-foreground">{label}</p>
-              <p className="text-sm text-muted-foreground mt-1">{description}</p>
+            <div className="text-center px-2">
+              <p className="font-semibold text-foreground text-sm sm:text-base">{label}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1">{description}</p>
             </div>
             <button 
               type="button"
-              className="btn-secondary mt-2 pointer-events-auto"
+              className="btn-secondary mt-1 sm:mt-2 pointer-events-auto text-sm"
               onClick={handleButtonClick}
             >
               <Upload className="h-4 w-4" />
