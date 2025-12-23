@@ -9,7 +9,6 @@ import {
   Files,
   FileDown,
   Layers,
-  Shield,
   Scissors,
   Crop,
   FileText,
@@ -103,60 +102,67 @@ const Index = () => {
   const showPdfTools = activeCategory === "all" || activeCategory === "pdf";
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative overflow-hidden py-12 md:py-20">
-          <div className="absolute inset-0 bg-gradient-to-br from-accent/60 via-background to-background" />
-          <div className="absolute inset-0 opacity-30">
-            <div className="absolute top-20 left-1/4 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-float" />
-            <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-float" style={{ animationDelay: "1s" }} />
+        <section className="relative overflow-hidden py-16 md:py-24">
+          {/* Background effects */}
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.08),transparent_60%)]" />
+            <div className="absolute top-1/4 -left-32 w-96 h-96 bg-primary/10 rounded-full blur-[100px]" />
+            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[hsl(var(--gradient-end)/0.08)] rounded-full blur-[120px]" />
           </div>
           
           <div className="container relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
-              className="max-w-2xl mx-auto text-center"
+              transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="max-w-3xl mx-auto text-center"
             >
+              {/* Badge */}
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-                className="privacy-badge mb-6"
+                transition={{ delay: 0.1, duration: 0.5 }}
+                className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 text-sm font-medium text-primary"
               >
-                <Shield className="h-4 w-4 text-primary" />
-                <span>Private, Fast, Browser-Only File Tools</span>
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                </span>
+                100% Private • Browser-Based Processing
               </motion.div>
 
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 leading-tight tracking-tight">
-                Transform your files{" "}
-                <span className="text-gradient">privately</span>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-foreground mb-6 leading-[1.1] tracking-tight">
+                Transform files{" "}
+                <span className="bg-gradient-to-r from-primary via-[hsl(var(--gradient-end))] to-primary bg-clip-text text-transparent">
+                  instantly
+                </span>
               </h1>
 
-              <p className="text-lg text-muted-foreground mb-8 max-w-lg mx-auto leading-relaxed">
-                All processing happens locally in your browser. No uploads, no
-                servers, no data collection.
+              <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-xl mx-auto leading-relaxed">
+                Process your images and PDFs directly in your browser. 
+                No uploads, no servers, completely private.
               </p>
 
-              <div className="flex flex-wrap justify-center gap-3 mb-8">
+              <div className="flex flex-wrap justify-center gap-4">
                 {[
-                  { label: "100% Free", color: "bg-success" },
-                  { label: "No Sign Up", color: "bg-success" },
-                  { label: "Works Offline", color: "bg-success" },
+                  { label: "Free Forever", icon: "✨" },
+                  { label: "No Account Required", icon: "🔓" },
+                  { label: "Works Offline", icon: "📡" },
                 ].map((item, i) => (
                   <motion.div
                     key={item.label}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 + i * 0.1 }}
-                    className="flex items-center gap-2 text-sm text-muted-foreground glass-card px-4 py-2 rounded-full"
+                    transition={{ delay: 0.3 + i * 0.1 }}
+                    className="flex items-center gap-2 text-sm text-muted-foreground bg-card/50 backdrop-blur-sm border border-border/50 px-4 py-2.5 rounded-full"
                   >
-                    <div className={`h-2 w-2 rounded-full ${item.color}`} />
-                    <span>{item.label}</span>
+                    <span>{item.icon}</span>
+                    <span className="font-medium">{item.label}</span>
                   </motion.div>
                 ))}
               </div>
@@ -165,19 +171,19 @@ const Index = () => {
         </section>
 
         {/* Category Switcher */}
-        <section className="sticky top-16 z-40 py-4 glass-strong border-b border-border/50">
+        <section className="sticky top-16 z-40 py-4 bg-background/80 backdrop-blur-xl border-b border-border/40">
           <div className="container">
             <div className="flex justify-center">
-              <div className="inline-flex p-1.5 rounded-2xl bg-muted/80 backdrop-blur-sm">
+              <div className="inline-flex p-1.5 rounded-full bg-muted/60 border border-border/50">
                 {[
                   { value: "all", label: "All Tools", icon: null },
-                  { value: "image", label: "Image Tools", icon: Image },
-                  { value: "pdf", label: "PDF Tools", icon: FileText },
+                  { value: "image", label: "Image", icon: Image },
+                  { value: "pdf", label: "PDF", icon: FileText },
                 ].map((category) => (
                   <button
                     key={category.value}
                     onClick={() => setActiveCategory(category.value as typeof activeCategory)}
-                    className={`relative px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 flex items-center gap-2 ${
+                    className={`relative px-5 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 flex items-center gap-2 ${
                       activeCategory === category.value
                         ? "text-primary-foreground"
                         : "text-muted-foreground hover:text-foreground"
@@ -186,8 +192,8 @@ const Index = () => {
                     {activeCategory === category.value && (
                       <motion.div
                         layoutId="activeCategory"
-                        className="absolute inset-0 bg-primary rounded-xl shadow-lg shadow-primary/25"
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        className="absolute inset-0 bg-gradient-to-r from-primary to-[hsl(var(--gradient-end))] rounded-full shadow-lg shadow-primary/30"
+                        transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
                       />
                     )}
                     <span className="relative z-10 flex items-center gap-2">
@@ -210,29 +216,29 @@ const Index = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className="py-10 md:py-16"
+              className="py-12 md:py-20"
             >
               <div className="container">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="mb-8"
+                  className="mb-10"
                 >
-                  <div className="flex items-center gap-4 mb-2">
-                    <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-accent to-primary/20 flex items-center justify-center shadow-lg shadow-primary/10">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
                       <Image className="h-5 w-5 text-primary" />
                     </div>
-                    <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+                    <h2 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">
                       Image Tools
                     </h2>
                   </div>
-                  <p className="text-muted-foreground">
-                    Compress, convert, and resize images instantly
+                  <p className="text-muted-foreground ml-[52px]">
+                    Compress, convert, and resize your images
                   </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {imageTools.map((tool, index) => (
                     <ToolCard key={tool.href} {...tool} delay={index} />
                   ))}
@@ -250,32 +256,32 @@ const Index = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className={`py-10 md:py-16 relative overflow-hidden ${showImageTools ? "" : ""}`}
+              className="py-12 md:py-20 relative"
             >
               {showImageTools && (
-                <div className="absolute inset-0 bg-gradient-to-b from-secondary/50 to-background" />
+                <div className="absolute inset-0 bg-gradient-to-b from-muted/30 to-transparent" />
               )}
               <div className="container relative z-10">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="mb-8"
+                  className="mb-10"
                 >
-                  <div className="flex items-center gap-4 mb-2">
-                    <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-accent to-primary/20 flex items-center justify-center shadow-lg shadow-primary/10">
-                      <Layers className="h-5 w-5 text-primary" />
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[hsl(var(--gradient-end))]/20 to-[hsl(var(--gradient-end))]/5 flex items-center justify-center">
+                      <Layers className="h-5 w-5 text-[hsl(var(--gradient-end))]" />
                     </div>
-                    <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+                    <h2 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">
                       PDF Tools
                     </h2>
                   </div>
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground ml-[52px]">
                     Merge, compress, and convert PDF documents
                   </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {pdfTools.map((tool, index) => (
                     <ToolCard key={tool.href} {...tool} delay={index} />
                   ))}
