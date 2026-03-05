@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Ghost icon">
+  <title>Ghost icon</title>
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f4f5fb"/>
+      <stop offset="100%" stop-color="#e2e6f3"/>
+    </linearGradient>
+    <radialGradient id="ghostGrad" cx="58%" cy="38%" r="58%" fx="58%" fy="38%">
+      <stop offset="0%" stop-color="#9da4f5"/>
+      <stop offset="60%" stop-color="#7b7fe8"/>
+      <stop offset="100%" stop-color="#5b5dd4"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect width="100" height="100" rx="22" ry="22" fill="url(#bgGrad)"/>
+
+  <!-- Ghost / blob body with bumps at bottom -->
+  <path d="
+    M 50 18
+    C 68 18, 82 31, 82 50
+    C 82 62, 77 71, 70 74
+    C 67 77, 64 76, 62 73
+    C 60 70, 58 68, 56 71
+    C 54 74, 52 77, 50 75
+    C 48 73, 46 70, 44 73
+    C 42 76, 40 77, 38 74
+    C 32 71, 20 62, 20 50
+    C 20 31, 32 18, 50 18 Z
+  " fill="url(#ghostGrad)"/>
+
+  <!-- Left eye -->
+  <rect x="38" y="34" width="10" height="15" rx="5" ry="5" fill="white" opacity="0.92"/>
+  <!-- Right eye -->
+  <rect x="52" y="34" width="10" height="15" rx="5" ry="5" fill="white" opacity="0.92"/>
+
+  <!-- Smile (J-curve / hook shape) -->
+  <path d="M 33 58 Q 33 70, 44 68 Q 54 66, 60 56"
+        stroke="white" stroke-width="4" fill="none"
+        stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+</svg>
